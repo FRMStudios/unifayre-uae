@@ -94,5 +94,5 @@ export const BUSINESS_TYPES = [
   "Other",
 ];
 
-export const WHATSAPP_URL = "https://wa.me/91XXXXXXXXXX";
-export const WHATSAPP_DISPLAY = "+91 XXXXX XXXXX";
+export const WHATSAPP_URL = "https://wa.me/919871244155";
+export const WHATSAPP_DISPLAY = "+91 98712 44155";
