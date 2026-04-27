@@ -55,8 +55,8 @@ const HERO_SLIDES: Slide[] = [
 
 const HEADLINE_LINES = [
   { plain: "The frozen food", accent: null, accentColor: null as string | null },
-  { plain: "", accent: "partner", accentColor: "orange" as const },
-  { plain: "for the", accent: "Gulf's", accentColor: "orange-bright" as const },
+  { plain: "", accent: "partner", accentColor: "muted" as const },
+  { plain: "for the", accent: "Gulf's", accentColor: "orange" as const },
   { plain: "best kitchens.", accent: null, accentColor: null },
 ];
 
@@ -72,7 +72,7 @@ const lineVariants = {
 const stagger = {
   hidden: {},
   show: {
-    transition: { staggerChildren: 0.12, delayChildren: 0.2 },
+    transition: { staggerChildren: 0.11, delayChildren: 0.15 },
   },
 };
 
@@ -93,22 +93,16 @@ export default function Hero() {
   return (
     <section
       id="top"
-      className="relative isolate overflow-hidden bg-[#16110D] text-white"
+      className="relative isolate min-h-[80svh] overflow-hidden bg-white text-ink md:h-[78svh] md:min-h-0"
     >
-      {/* Background image stack — full bleed on mobile, right-half on desktop */}
-      <div className="pointer-events-none absolute inset-0 md:inset-y-0 md:left-auto md:right-0 md:w-[58%] lg:w-[55%]">
+      {/* Full-bleed rotating images (no scale animation — pure crossfade) */}
+      <div className="absolute inset-0">
         {HERO_SLIDES.map((s, i) => (
           <motion.div
             key={s.img}
             initial={false}
-            animate={{
-              opacity: i === idx ? 1 : 0,
-              scale: i === idx ? 1 : 1.04,
-            }}
-            transition={{
-              opacity: { duration: 1.2, ease: "easeInOut" },
-              scale: { duration: 6, ease: "easeOut" },
-            }}
+            animate={{ opacity: i === idx ? 1 : 0 }}
+            transition={{ duration: 1.2, ease: "easeInOut" }}
             className="absolute inset-0"
           >
             <Image
@@ -116,40 +110,38 @@ export default function Hero() {
               alt={s.title}
               fill
               priority={i === 0}
-              sizes="(max-width: 768px) 100vw, 60vw"
+              sizes="100vw"
               className="object-cover"
             />
           </motion.div>
         ))}
 
-        {/* Gradient: heavy on mobile (full overlay), soft on desktop (left edge fade only) */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#16110D] via-[#16110D]/82 to-[#16110D]/55 md:via-[#16110D]/35 md:to-transparent" />
-        {/* Bottom darken */}
-        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#16110D]/85 to-transparent" />
-        {/* Vignette */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_50%,transparent_30%,rgba(22,17,13,0.5)_85%)]" />
+        {/* Continuous white-to-transparent gradient — no seam, no patch */}
+        <div className="absolute inset-0 bg-gradient-to-r from-white from-50% via-white/65 to-white/15 md:from-42% md:via-white/30 md:to-transparent" />
+        {/* Subtle bottom soft fade */}
+        <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white/55 to-transparent" />
       </div>
 
-      {/* Soft orange accent glow */}
+      {/* Soft orange accent glow behind text */}
       <div
         aria-hidden
-        className="orange-blob pointer-events-none absolute -bottom-32 left-10 h-[420px] w-[420px] rounded-full opacity-50"
+        className="orange-blob pointer-events-none absolute -bottom-40 -left-20 h-[420px] w-[420px] rounded-full opacity-50"
       />
 
       {/* Content */}
-      <div className="relative z-10 mx-auto flex min-h-[92svh] max-w-[1320px] items-center px-5 py-24 md:px-10 md:py-28">
+      <div className="relative z-10 mx-auto flex h-full min-h-[80svh] max-w-[1320px] items-center px-5 py-16 md:min-h-0 md:px-10 md:py-12">
         <motion.div
           variants={stagger}
           initial="hidden"
           animate="show"
-          className="max-w-[600px]"
+          className="w-full max-w-[600px]"
         >
           <motion.div
             variants={{
-              hidden: { opacity: 0, y: 16 },
+              hidden: { opacity: 0, y: 14 },
               show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE } },
             }}
-            className="mb-7 inline-flex items-center gap-2.5 rounded-full border border-white/15 bg-white/[0.06] py-1.5 pl-2 pr-4 text-[0.74rem] font-medium text-white/90 backdrop-blur"
+            className="mb-6 inline-flex items-center gap-2.5 rounded-full border border-[color:var(--line)] bg-white py-1.5 pl-2 pr-4 text-[0.74rem] font-medium text-ink/85 shadow-[0_1px_2px_rgba(15,15,16,0.04)]"
           >
             <span className="relative inline-flex h-2 w-2">
               <span className="absolute inset-0 animate-soft-pulse rounded-full bg-[color:var(--orange)]" />
@@ -157,7 +149,7 @@ export default function Hero() {
             Now serving the UAE &amp; Gulf
           </motion.div>
 
-          <h1 className="font-display text-[clamp(2.6rem,6vw,5.2rem)] font-extrabold leading-[1.02] tracking-[-0.035em] text-white text-balance">
+          <h1 className="font-display text-[clamp(2.3rem,5.2vw,4.4rem)] font-extrabold leading-[1.03] tracking-[-0.035em] text-ink text-balance">
             {HEADLINE_LINES.map((line, i) => (
               <span key={i} className="block overflow-hidden pb-[0.06em]">
                 <motion.span variants={lineVariants} className="block">
@@ -170,9 +162,9 @@ export default function Hero() {
                   {line.accent && (
                     <span
                       className={
-                        line.accentColor === "orange-bright"
-                          ? "text-[color:var(--orange-bright)] italic"
-                          : "text-[color:var(--orange)] italic"
+                        line.accentColor === "orange"
+                          ? "text-[color:var(--orange)] italic"
+                          : "text-[color:var(--ink-muted)] italic"
                       }
                     >
                       {line.accent}
@@ -185,10 +177,10 @@ export default function Hero() {
 
           <motion.p
             variants={{
-              hidden: { opacity: 0, y: 14 },
+              hidden: { opacity: 0, y: 12 },
               show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: EASE } },
             }}
-            className="mt-7 max-w-[28rem] text-[1rem] leading-relaxed text-white/72"
+            className="mt-5 max-w-[28rem] text-[0.96rem] leading-relaxed text-ink-soft"
           >
             Over 30 years of precision manufacturing. State-of-the-art
             technology, BRC-certified lines, and a Roti Canai capability
@@ -197,75 +189,59 @@ export default function Hero() {
 
           <motion.div
             variants={{
-              hidden: { opacity: 0, y: 14 },
+              hidden: { opacity: 0, y: 12 },
               show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: EASE } },
             }}
-            className="mt-8 flex flex-wrap items-center gap-3"
+            className="mt-6 flex flex-wrap items-center gap-3"
           >
             <a
               href="#contact"
-              className="group btn-orange inline-flex items-center gap-2 rounded-full px-6 py-3.5 text-[0.92rem] font-semibold shadow-[0_14px_36px_-12px_rgba(255,106,44,0.6)]"
+              className="group btn-orange inline-flex items-center gap-2 rounded-full px-6 py-3 text-[0.9rem] font-semibold shadow-[0_12px_30px_-10px_rgba(255,106,44,0.55)]"
             >
               Request Partnership Kit
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </a>
             <a
               href="#categories"
-              className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/[0.04] px-6 py-3.5 text-[0.92rem] font-semibold text-white backdrop-blur transition-all hover:border-white hover:bg-white hover:text-[color:var(--ink)]"
+              className="inline-flex items-center gap-2 rounded-full border border-[color:var(--line)] bg-white px-6 py-3 text-[0.9rem] font-semibold text-ink transition-all hover:border-ink hover:bg-ink hover:text-white"
             >
               View Range
             </a>
           </motion.div>
 
+          {/* Per-slide info card */}
           <motion.div
             variants={{
-              hidden: { opacity: 0 },
-              show: { opacity: 1, transition: { duration: 0.7, ease: EASE, delay: 0.2 } },
+              hidden: { opacity: 0, y: 14 },
+              show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: EASE, delay: 0.3 } },
             }}
-            className="mt-10 flex flex-wrap items-center gap-5 text-[0.7rem] uppercase tracking-[0.16em] text-white/55"
-          >
-            <span>BRC</span>
-            <span className="h-1 w-1 rounded-full bg-white/30" />
-            <span>FSSC 22000</span>
-            <span className="h-1 w-1 rounded-full bg-white/30" />
-            <span>Halal</span>
-            <span className="h-1 w-1 rounded-full bg-white/30" />
-            <span>US FDA</span>
-          </motion.div>
-
-          {/* Per-slide info card (animates as slide changes) */}
-          <motion.div
-            variants={{
-              hidden: { opacity: 0, y: 16 },
-              show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: EASE, delay: 0.4 } },
-            }}
-            className="mt-10"
+            className="mt-7"
           >
             <AnimatePresence mode="wait">
               <motion.div
                 key={`slide-card-${idx}`}
-                initial={{ opacity: 0, y: 12 }}
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 12 }}
-                transition={{ duration: 0.5, ease: EASE }}
-                className="flex items-center gap-5 rounded-2xl border border-white/10 bg-white/[0.05] p-4 backdrop-blur-md md:max-w-[440px] md:p-5"
+                exit={{ opacity: 0, y: 10 }}
+                transition={{ duration: 0.45, ease: EASE }}
+                className="flex items-center gap-5 rounded-2xl border border-[color:var(--line)] bg-white p-3.5 shadow-[0_8px_22px_-12px_rgba(15,15,16,0.18)] md:max-w-[440px] md:p-4"
               >
-                <div className="flex-1 min-w-0">
-                  <div className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-[color:var(--orange-bright)]">
+                <div className="min-w-0 flex-1">
+                  <div className="text-[0.6rem] font-bold uppercase tracking-[0.18em] text-[color:var(--orange)]">
                     Now showing
                   </div>
-                  <div className="mt-1 truncate font-display text-[1.05rem] font-extrabold tracking-[-0.02em] text-white md:text-[1.1rem]">
+                  <div className="mt-0.5 truncate font-display text-[1rem] font-extrabold tracking-[-0.02em] text-ink md:text-[1.05rem]">
                     {slide.title}
                   </div>
-                  <div className="mt-1 text-[0.78rem] text-white/65">
+                  <div className="mt-0.5 text-[0.74rem] text-ink-soft">
                     {slide.category}
                   </div>
                 </div>
-                <div className="border-l border-white/10 pl-5 text-right">
-                  <div className="font-display text-[1.2rem] font-extrabold leading-none text-[color:var(--orange-bright)] md:text-[1.35rem]">
+                <div className="border-l border-[color:var(--line)] pl-5 text-right">
+                  <div className="font-display text-[1.15rem] font-extrabold leading-none text-[color:var(--orange)] md:text-[1.25rem]">
                     {slide.metric}
                   </div>
-                  <div className="mt-1.5 whitespace-nowrap text-[0.6rem] font-semibold uppercase tracking-[0.12em] text-white/55">
+                  <div className="mt-1 whitespace-nowrap text-[0.58rem] font-semibold uppercase tracking-[0.12em] text-ink-muted">
                     {slide.metricLabel}
                   </div>
                 </div>
@@ -275,9 +251,9 @@ export default function Hero() {
         </motion.div>
       </div>
 
-      {/* Slideshow controls */}
-      <div className="absolute bottom-6 right-6 z-20 flex items-center gap-3 md:bottom-8 md:right-10">
-        <div className="flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-2 backdrop-blur-md">
+      {/* Slideshow controls (white glass, ink dots) */}
+      <div className="absolute bottom-5 right-5 z-20 flex items-center gap-2 md:bottom-7 md:right-10">
+        <div className="flex items-center gap-1.5 rounded-full border border-[color:var(--line)] bg-white/95 px-3 py-2 backdrop-blur-md shadow-[0_4px_12px_-4px_rgba(15,15,16,0.1)]">
           {HERO_SLIDES.map((_, i) => (
             <button
               key={i}
@@ -286,7 +262,7 @@ export default function Hero() {
               className={`h-1.5 rounded-full transition-all ${
                 i === idx
                   ? "w-5 bg-[color:var(--orange)]"
-                  : "w-1.5 bg-white/40 hover:bg-white/60"
+                  : "w-1.5 bg-ink/25 hover:bg-ink/45"
               }`}
             />
           ))}
@@ -294,7 +270,7 @@ export default function Hero() {
         <button
           onClick={() => setPaused((p) => !p)}
           aria-label={paused ? "Resume slideshow" : "Pause slideshow"}
-          className="flex h-10 w-10 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-md transition-transform hover:scale-105"
+          className="flex h-10 w-10 items-center justify-center rounded-full border border-[color:var(--line)] bg-white/95 text-ink backdrop-blur-md shadow-[0_4px_12px_-4px_rgba(15,15,16,0.1)] transition-transform hover:scale-105"
         >
           {paused ? (
             <Play className="h-4 w-4" strokeWidth={2} />
