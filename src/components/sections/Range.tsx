@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Leaf, Drumstick } from "lucide-react";
+import { ArrowRight, Leaf, Drumstick, Maximize2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import {
   PRODUCTS,
@@ -10,8 +10,10 @@ import {
   NONVEG_SUB_CATEGORIES,
   productsByScope,
   type CategoryId,
+  type Product,
   type Scope,
 } from "@/lib/products";
+import ProductLightbox from "@/components/ui/ProductLightbox";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -23,6 +25,7 @@ export default function Range() {
   const [scope, setScope] = useState<Scope>("veg");
   const [tab, setTab] = useState<SubTab>("all");
   const [showAll, setShowAll] = useState(false);
+  const [activeProduct, setActiveProduct] = useState<Product | null>(null);
 
   // Listen for category-tile clicks from the Categories section.
   useEffect(() => {
@@ -146,8 +149,11 @@ export default function Range() {
             className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-4 lg:grid-cols-4 xl:grid-cols-6"
           >
             {visible.map((product, i) => (
-              <motion.article
+              <motion.button
                 key={`${product.category}-${product.name}`}
+                type="button"
+                onClick={() => setActiveProduct(product)}
+                aria-label={`View ${product.name}`}
                 layout
                 initial={{ opacity: 0, y: 14 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -156,7 +162,7 @@ export default function Range() {
                   ease: EASE,
                   delay: Math.min(i * 0.035, 0.4),
                 }}
-                className="card-hover group flex flex-col overflow-hidden rounded-2xl border border-[color:var(--line)] bg-white"
+                className="card-hover group flex flex-col overflow-hidden rounded-2xl border border-[color:var(--line)] bg-white text-left transition-all focus:outline-none focus-visible:border-[color:var(--orange)] focus-visible:ring-2 focus-visible:ring-[color:var(--orange)]/30"
               >
                 <div className="relative aspect-square w-full overflow-hidden bg-[color:var(--bg-muted)]">
                   <Image
@@ -173,6 +179,12 @@ export default function Range() {
                       </span>
                     </div>
                   )}
+                  {/* Hover overlay with expand icon */}
+                  <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/0 opacity-0 transition-all duration-300 group-hover:bg-black/30 group-hover:opacity-100 group-focus-visible:bg-black/30 group-focus-visible:opacity-100">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-ink shadow-lg">
+                      <Maximize2 className="h-4 w-4" strokeWidth={2.2} />
+                    </span>
+                  </div>
                 </div>
                 <div className="flex flex-1 flex-col gap-1 p-3 md:p-4">
                   <span className="text-[0.58rem] font-semibold uppercase tracking-[0.14em] text-ink-muted">
@@ -183,7 +195,7 @@ export default function Range() {
                     {product.name}
                   </h3>
                 </div>
-              </motion.article>
+              </motion.button>
             ))}
           </motion.div>
         </AnimatePresence>
@@ -207,6 +219,11 @@ export default function Range() {
           </a>
         </div>
       </div>
+
+      <ProductLightbox
+        product={activeProduct}
+        onClose={() => setActiveProduct(null)}
+      />
     </section>
   );
 }
