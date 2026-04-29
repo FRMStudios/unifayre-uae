@@ -1,19 +1,20 @@
 import type { Metadata } from "next";
-import { DM_Sans, Plus_Jakarta_Sans } from "next/font/google";
+import { Inter, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 
-const dmSans = DM_Sans({
-  variable: "--font-dm-sans",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
   weight: ["400", "500", "600", "700"],
 });
 
-const jakarta = Plus_Jakarta_Sans({
-  variable: "--font-jakarta",
+const cormorant = Cormorant_Garamond({
+  variable: "--font-cormorant",
   subsets: ["latin"],
   display: "swap",
-  weight: ["500", "600", "700", "800"],
+  weight: ["400", "500", "600", "700"],
+  style: ["normal", "italic"],
 });
 
 export const metadata: Metadata = {
@@ -35,7 +36,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Unifayre Foods | Frozen Food Partner for the UAE & Gulf",
     description:
-      "Clean, modern frozen food manufacturing. Over 30 years heritage. Now serving the UAE and Gulf.",
+      "Restaurant-grade frozen food manufacturing. Over 30 years heritage. Now serving the UAE and Gulf.",
     type: "website",
   },
 };
@@ -48,9 +49,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${dmSans.variable} ${jakarta.variable} h-full antialiased`}
+      className={`${inter.variable} ${cormorant.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-bg text-ink font-sans">
+      <body className="min-h-full flex flex-col bg-bg-deep text-text-primary font-sans">
         {children}
       </body>
     </html>
