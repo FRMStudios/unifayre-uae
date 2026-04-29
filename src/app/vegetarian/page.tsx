@@ -4,6 +4,8 @@ import Footer from "@/components/sections/Footer";
 import WhatsAppFloat from "@/components/sections/WhatsAppFloat";
 import ScrollProgress from "@/components/ui/ScrollProgress";
 import CinematicHero from "@/components/ui/CinematicHero";
+import CategorySection from "@/components/ui/CategorySection";
+import { productsByCategory } from "@/lib/products";
 
 export const metadata: Metadata = {
   title: "Vegetarian Range | Unifayre Foods",
@@ -11,34 +13,27 @@ export const metadata: Metadata = {
     "44 vegetarian SKUs built for menus that scale. Flatbreads, frozen-to-fry snacks, base gravies and retort rice engineered for the Gulf's busiest kitchens.",
 };
 
-/**
- * /vegetarian — Phase 1A scaffold.
- *
- * In Phase 1B, four CategorySection blocks will populate below the hero:
- *   01 Flatbreads & Tortillas
- *   02 Frozen-to-Fry Snacks
- *   03 Base Gravies & Pastes
- *   04 Retort Rice
- *
- * Hero placeholder: /products/flatbreads/malabar-garlic.jpg with dark
- * gradient overlay. Real shot brief: Malabar Paratha layers being separated
- * with chef's hands, steam rising, dark wooden surface.
- */
-
 export default function VegetarianPage() {
+  const flatbreads = productsByCategory("flatbreads");
+  const snacks = productsByCategory("snacks");
+  const gravies = productsByCategory("gravies");
+  const rice = productsByCategory("rice");
+
+  const totalSkus = flatbreads.length + snacks.length + gravies.length + rice.length;
+
   return (
     <>
       <ScrollProgress />
       <Nav />
       <main className="flex-1">
         <CinematicHero
-          imageSrc="/products/flatbreads/malabar-garlic.jpg"
-          imageAlt="Malabar Paratha vegetarian range"
+          imageSrc="/images/v2/hero/veg-hero.png"
+          imageAlt="Vegetarian range — Malabar Paratha layered hero"
           variant="page"
           eyebrow="Vegetarian range"
           headline={
             <>
-              44 vegetarian SKUs.
+              {totalSkus} vegetarian SKUs.
               <br />
               <em className="italic font-display text-[color:var(--accent-gold)]">
                 Built for menus that scale.
@@ -50,32 +45,81 @@ export default function VegetarianPage() {
           secondaryCta={{ label: "View Non-Vegetarian", href: "/non-vegetarian" }}
         />
 
-        {/* Capability band — compact placeholder for Phase 1B */}
-        <section className="border-y border-[color:var(--border-subtle)] bg-[color:var(--bg-warm-shadow)] py-12 md:py-16">
+        {/* Capability strip */}
+        <section className="border-y border-[color:var(--border-subtle)] bg-[color:var(--bg-warm-shadow)] py-12 md:py-14">
           <div className="mx-auto grid max-w-[1320px] grid-cols-2 gap-6 px-5 md:grid-cols-4 md:gap-10 md:px-10">
             <CapabilityStat number="18,000" suffix=" MT" label="Veg Capacity" />
             <CapabilityStat number="4" suffix="" label="Categories" />
-            <CapabilityStat number="44" suffix=" SKUs" label="Active Range" />
+            <CapabilityStat
+              number={String(totalSkus)}
+              suffix=" SKUs"
+              label="Active Range"
+            />
             <CapabilityStat number="100%" suffix="" label="Halal-line ready" />
           </div>
         </section>
 
-        {/* Phase 1B placeholder — will hold 4 × CategorySection components */}
-        <section className="border-b border-[color:var(--border-subtle)] bg-[color:var(--bg-deep)] py-24 md:py-32">
+        {/* Category sections — 4 cinematic blocks */}
+        <CategorySection
+          anchorId="flatbreads"
+          number="01"
+          title="Flatbreads & Tortillas"
+          description="Malabar Paratha, Roti Canai, stuffed parathas and 4-grain tortillas. The flatbread engine for QSR wraps, breakfast platters, curry bases and dessert formats."
+          capacity="15,500+ pcs / hr"
+          bannerSrc="/images/v2/categories/flatbreads-banner.png"
+          bannerAlt="Flatbreads & Tortillas cinematic banner"
+          products={flatbreads}
+        />
+
+        <CategorySection
+          anchorId="snacks-veg"
+          number="02"
+          title="Frozen-to-Fry Snacks"
+          description="Samosas, kebabs, tikkis, kachoris, bhaji, pakoras and falafel. Frozen at peak so every fry comes out crisp, golden and consistent at scale."
+          capacity="1 lakh pcs / day"
+          bannerSrc="/images/v2/categories/snacks-veg-banner.png"
+          bannerAlt="Frozen-to-Fry Snacks vegetarian banner"
+          products={snacks}
+        />
+
+        <CategorySection
+          anchorId="gravies"
+          number="03"
+          title="Base Gravies & Pastes"
+          description="Makhani, Manchurian, Thai red and green curry, biryani pastes and base sauces. The backbone of any restaurant menu, ready to plate or build on."
+          capacity="1,000 kg / hr"
+          bannerSrc="/images/v2/categories/gravies-banner.png"
+          bannerAlt="Base Gravies & Pastes Makhani banner"
+          products={gravies}
+        />
+
+        <CategorySection
+          anchorId="rice"
+          number="04"
+          title="Retort Rice"
+          description="Eight aromatic rice varieties from Basmati and Jeera to Saffron and Cilantro Lime. Shelf-stable at ambient temperature, ready in minutes."
+          capacity="Ambient shelf stable"
+          bannerSrc="/images/v2/categories/rice-banner.png"
+          bannerAlt="Retort Rice biryani banner"
+          products={rice}
+        />
+
+        {/* Customisation CTA band */}
+        <section className="bg-[color:var(--bg-warm-shadow)] py-20 md:py-24">
           <div className="mx-auto max-w-[1320px] px-5 text-center md:px-10">
             <span className="text-[0.7rem] font-semibold uppercase tracking-[0.24em] text-[color:var(--accent-gold)]">
-              Coming next
+              R&amp;D capability
             </span>
-            <h2 className="mt-4 font-display text-[clamp(2rem,4vw,3rem)] font-semibold leading-tight tracking-[-0.015em] text-[color:var(--text-primary)]">
-              Four cinematic category sections,
-              <br />
-              <em className="italic">arriving in Phase 1B.</em>
-            </h2>
-            <p className="mx-auto mt-5 max-w-xl text-[0.94rem] leading-relaxed text-[color:var(--text-secondary)]">
-              Flatbreads & Tortillas, Frozen-to-Fry Snacks, Base Gravies & Pastes,
-              and Retort Rice will each get their own dedicated banner, product
-              gallery, and lifestyle strip.
-            </p>
+            <h3 className="mx-auto mt-4 max-w-[28ch] font-display text-[clamp(1.8rem,3.6vw,2.6rem)] font-semibold leading-tight tracking-[-0.015em] text-[color:var(--text-primary)]">
+              Need a custom spec? Our R&amp;D builds to{" "}
+              <em className="italic">your menu, region, and palate.</em>
+            </h3>
+            <a
+              href="/contact"
+              className="btn-gold mt-7 inline-flex items-center gap-2 rounded-full px-6 py-3.5 text-[0.88rem] font-semibold shadow-[0_14px_36px_-12px_rgba(201,169,97,0.5)]"
+            >
+              Brief our R&amp;D team
+            </a>
           </div>
         </section>
       </main>
