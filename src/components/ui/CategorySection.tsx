@@ -1,14 +1,17 @@
 "use client";
 
 /**
- * CategorySection — V2 Phase 1B
+ * CategorySection — V2 Phase 1B (refined sizing pass)
  *
- * A category showcase block:
- *   1. Full-bleed cinematic banner (16:9) with diagonal dark navy overlay panel
- *      on the left holding section number, title, blurb, capacity badge, CTA.
- *   2. Product grid below with dark-theme cards, click → ProductLightbox.
+ * Full-bleed cinematic banner (16:9) with diagonal navy overlay panel on left.
+ * Banner content: gold accent line, large gold section number, title,
+ * description, capacity badge.
+ * Below: dark-theme product grid that opens ProductLightbox on click.
  *
- * Used on /vegetarian (4 sections) and /non-vegetarian (2 sections).
+ * Refined typography (per /vegetarian brief):
+ *   - Section number: text-5xl md:text-6xl, font-light, tracking-tighter
+ *   - Category title: text-2xl md:text-3xl lg:text-4xl, font-light, tracking-tight
+ *   - Sub-line: text-sm md:text-base lg:text-lg, font-light, opacity-85
  */
 
 import Image from "next/image";
@@ -30,6 +33,10 @@ export type CategorySectionProps = {
   products: Product[];
   productsToShow?: number;
   anchorId?: string;
+  /** Image position for the banner. Defaults to "right" since most banners are food-on-right. */
+  imageObjectPosition?: string;
+  /** Refined typography per /vegetarian brief. Default true. */
+  refined?: boolean;
 };
 
 export default function CategorySection({
@@ -42,11 +49,25 @@ export default function CategorySection({
   products,
   productsToShow = 8,
   anchorId,
+  imageObjectPosition = "right center",
+  refined = true,
 }: CategorySectionProps) {
   const [activeProduct, setActiveProduct] = useState<Product | null>(null);
   const [showAll, setShowAll] = useState(false);
   const visible = showAll ? products : products.slice(0, productsToShow);
   const hasMore = products.length > productsToShow;
+
+  const numberClass = refined
+    ? "mt-5 font-display text-5xl md:text-6xl font-light leading-none tracking-tighter text-[color:var(--accent-gold)]"
+    : "mt-5 font-display text-[clamp(3.5rem,7vw,6rem)] font-semibold leading-none tracking-[-0.02em] text-[color:var(--accent-gold)]";
+
+  const titleClass = refined
+    ? "mt-3 font-display text-2xl md:text-3xl lg:text-4xl font-light leading-tight tracking-tight text-[color:var(--text-primary)]"
+    : "mt-3 font-display text-[clamp(1.8rem,3.6vw,2.8rem)] font-semibold leading-[1.05] tracking-[-0.015em] text-[color:var(--text-primary)]";
+
+  const descClass = refined
+    ? "mt-3 max-w-md text-sm md:text-base lg:text-lg font-light leading-relaxed text-[color:var(--text-primary)]/85"
+    : "mt-3 max-w-[28rem] text-[0.94rem] leading-relaxed text-[color:var(--text-secondary)]";
 
   return (
     <section
@@ -55,13 +76,13 @@ export default function CategorySection({
     >
       {/* Banner with diagonal overlay */}
       <div className="relative aspect-[16/9] w-full overflow-hidden md:aspect-[21/8]">
-        {/* Banner image — fills full width, content panel overlays it on desktop */}
         <Image
           src={bannerSrc}
           alt={bannerAlt}
           fill
           sizes="100vw"
           className="object-cover"
+          style={{ objectPosition: imageObjectPosition }}
         />
 
         {/* Mobile overlay — full darken so left content reads */}
@@ -70,13 +91,13 @@ export default function CategorySection({
           className="absolute inset-0 bg-gradient-to-t from-[color:var(--bg-deep)] via-[color:var(--bg-deep)]/55 to-[color:var(--bg-deep)]/15 md:hidden"
         />
 
-        {/* Desktop overlay — diagonal/asymmetric: dark panel left, image right */}
+        {/* Desktop overlay — left sweep so headline reads against image */}
         <div
           aria-hidden
           className="absolute inset-0 hidden md:block"
           style={{
             background:
-              "linear-gradient(95deg, rgba(10,22,40,0.95) 0%, rgba(10,22,40,0.85) 30%, rgba(10,22,40,0.45) 50%, transparent 70%)",
+              "linear-gradient(90deg, rgba(10,22,40,0.85) 0%, rgba(10,22,40,0.55) 28%, rgba(10,22,40,0.15) 52%, transparent 72%)",
           }}
         />
 
@@ -86,7 +107,7 @@ export default function CategorySection({
           className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[color:var(--bg-deep)] to-transparent"
         />
 
-        {/* Content panel — bottom-aligned mobile, left-aligned desktop */}
+        {/* Content panel — bottom-aligned mobile, left-centered desktop */}
         <div className="absolute inset-0 flex items-end md:items-center">
           <div className="mx-auto w-full max-w-[1320px] px-5 pb-12 md:px-10 md:pb-0">
             <motion.div
@@ -96,25 +117,10 @@ export default function CategorySection({
               transition={{ duration: 0.85, ease: EASE }}
               className="max-w-[520px]"
             >
-              {/* Gold accent line */}
               <div className="gold-line w-16 md:w-24" />
-
-              {/* Section number */}
-              <div className="mt-5 font-display text-[clamp(3.5rem,7vw,6rem)] font-semibold leading-none tracking-[-0.02em] text-[color:var(--accent-gold)]">
-                {number}
-              </div>
-
-              {/* Title */}
-              <h2 className="mt-3 font-display text-[clamp(1.8rem,3.6vw,2.8rem)] font-semibold leading-[1.05] tracking-[-0.015em] text-[color:var(--text-primary)]">
-                {title}
-              </h2>
-
-              {/* Description */}
-              <p className="mt-3 max-w-[28rem] text-[0.94rem] leading-relaxed text-[color:var(--text-secondary)]">
-                {description}
-              </p>
-
-              {/* Capacity badge */}
+              <div className={numberClass}>{number}</div>
+              <h2 className={titleClass}>{title}</h2>
+              <p className={descClass}>{description}</p>
               <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-[color:var(--border-gold)] bg-[color:var(--bg-warm-shadow)]/60 px-4 py-1.5 text-[0.74rem] font-semibold uppercase tracking-[0.16em] text-[color:var(--accent-gold)] backdrop-blur">
                 <span className="h-1 w-1 rounded-full bg-[color:var(--accent-gold)]" />
                 {capacity}
@@ -138,8 +144,7 @@ export default function CategorySection({
               The Range
             </span>
             <h3 className="mt-2 font-display text-[clamp(1.3rem,2vw,1.6rem)] font-semibold tracking-[-0.01em] text-[color:var(--text-primary)]">
-              {products.length} {products.length === 1 ? "SKU" : "SKUs"} in this
-              category
+              {products.length} {products.length === 1 ? "SKU" : "SKUs"} in this category
             </h3>
           </div>
           {hasMore && !showAll && (

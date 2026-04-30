@@ -5,6 +5,7 @@ import WhatsAppFloat from "@/components/sections/WhatsAppFloat";
 import ScrollProgress from "@/components/ui/ScrollProgress";
 import CinematicHero from "@/components/ui/CinematicHero";
 import CategorySection from "@/components/ui/CategorySection";
+import LifestyleStrip from "@/components/ui/LifestyleStrip";
 import { productsByCategory } from "@/lib/products";
 
 export const metadata: Metadata = {
@@ -19,16 +20,20 @@ export default function VegetarianPage() {
   const gravies = productsByCategory("gravies");
   const rice = productsByCategory("rice");
 
-  const totalSkus = flatbreads.length + snacks.length + gravies.length + rice.length;
+  const totalSkus =
+    flatbreads.length + snacks.length + gravies.length + rice.length;
 
   return (
     <>
       <ScrollProgress />
       <Nav />
       <main className="flex-1">
+        {/* Home hero — chef's pass multi-product composition.
+            object-center keeps the spread of food intact at all viewports.
+            overlayStyle "bottom-left" matches a multi-food / centred shot. */}
         <CinematicHero
-          imageSrc="/images/v2/hero/veg-hero.png"
-          imageAlt="Vegetarian range — Malabar Paratha layered hero"
+          imageSrc="/images/veg/heroes/home-hero.png"
+          imageAlt="Vegetarian range — chef's pass with parathas, gravy, rice, and frozen-to-fry snacks"
           variant="page"
           eyebrow="Vegetarian range"
           headline={
@@ -43,6 +48,9 @@ export default function VegetarianPage() {
           subline="Flatbreads, frozen-to-fry snacks, base gravies and retort rice. Engineered for the Gulf's busiest kitchens."
           primaryCta={{ label: "Request Sample", href: "/contact" }}
           secondaryCta={{ label: "View Non-Vegetarian", href: "/non-vegetarian" }}
+          objectPosition="center"
+          overlayStyle="bottom-left"
+          refined
         />
 
         {/* Capability strip */}
@@ -59,16 +67,18 @@ export default function VegetarianPage() {
           </div>
         </section>
 
-        {/* Category sections — 4 cinematic blocks */}
+        {/* Category sections — 4 cinematic blocks with food-on-right composition */}
         <CategorySection
           anchorId="flatbreads"
           number="01"
           title="Flatbreads & Tortillas"
           description="Malabar Paratha, Roti Canai, stuffed parathas and 4-grain tortillas. The flatbread engine for QSR wraps, breakfast platters, curry bases and dessert formats."
           capacity="15,500+ pcs / hr"
-          bannerSrc="/images/v2/categories/flatbreads-banner.png"
-          bannerAlt="Flatbreads & Tortillas cinematic banner"
+          bannerSrc="/images/veg/categories/flatbreads-banner.png"
+          bannerAlt="Malabari Paratha layers cinematic banner"
           products={flatbreads}
+          imageObjectPosition="right center"
+          refined
         />
 
         <CategorySection
@@ -77,9 +87,11 @@ export default function VegetarianPage() {
           title="Frozen-to-Fry Snacks"
           description="Samosas, kebabs, tikkis, kachoris, bhaji, pakoras and falafel. Frozen at peak so every fry comes out crisp, golden and consistent at scale."
           capacity="1 lakh pcs / day"
-          bannerSrc="/images/v2/categories/snacks-veg-banner.png"
-          bannerAlt="Frozen-to-Fry Snacks vegetarian banner"
+          bannerSrc="/images/veg/categories/snacks-banner.png"
+          bannerAlt="Falafel mid-fry frozen-to-fry snacks banner"
           products={snacks}
+          imageObjectPosition="right center"
+          refined
         />
 
         <CategorySection
@@ -88,9 +100,11 @@ export default function VegetarianPage() {
           title="Base Gravies & Pastes"
           description="Makhani, Manchurian, Thai red and green curry, biryani pastes and base sauces. The backbone of any restaurant menu, ready to plate or build on."
           capacity="1,000 kg / hr"
-          bannerSrc="/images/v2/categories/gravies-banner.png"
-          bannerAlt="Base Gravies & Pastes Makhani banner"
+          bannerSrc="/images/veg/categories/gravies-banner.png"
+          bannerAlt="Makhani gravy in copper pot banner"
           products={gravies}
+          imageObjectPosition="right center"
+          refined
         />
 
         <CategorySection
@@ -99,12 +113,77 @@ export default function VegetarianPage() {
           title="Retort Rice"
           description="Eight aromatic rice varieties from Basmati and Jeera to Saffron and Cilantro Lime. Shelf-stable at ambient temperature, ready in minutes."
           capacity="Ambient shelf stable"
-          bannerSrc="/images/v2/categories/rice-banner.png"
-          bannerAlt="Retort Rice biryani banner"
+          bannerSrc="/images/veg/categories/rice-banner.png"
+          bannerAlt="Biryani in clay handi banner"
           products={rice}
+          imageObjectPosition="right center"
+          refined
         />
 
-        {/* Customisation CTA band */}
+        {/* Lifestyle Strip — five cinematic frames showing where Unifayre lands */}
+        <LifestyleStrip
+          eyebrow="Where Unifayre lands"
+          title={
+            <>
+              From QSR pass to{" "}
+              <em className="italic">five-star buffet line.</em>
+            </>
+          }
+          subline="The same SKU, plated across every Gulf restaurant context."
+          frames={[
+            {
+              src: "/images/veg/lifestyle/qsr-plate.png",
+              alt: "QSR menu — vegetarian burger build",
+              caption: "QSR Menu",
+            },
+            {
+              src: "/images/veg/lifestyle/cloud-kitchen.png",
+              alt: "Cloud kitchen plating",
+              caption: "Cloud Kitchen",
+            },
+            {
+              src: "/images/veg/lifestyle/hotel-buffet.png",
+              alt: "Hotel buffet spread",
+              caption: "Hotel Buffet",
+            },
+            {
+              src: "/images/veg/lifestyle/chef-plating.png",
+              alt: "Chef plating mid-action, fine-dining",
+              caption: "Fine-Dining Plating",
+            },
+            {
+              src: "/images/veg/lifestyle/sizzle-closeup.png",
+              alt: "Sizzle close-up — vegetarian snack on hot iron",
+              caption: "Sensory Sizzle",
+            },
+          ]}
+        />
+
+        {/* Plant / Why Unifayre hero — Mohali plant at golden hour.
+            Building is right-aligned in the photo, so we use object-right
+            and a left sweep gradient to keep headline legibility. */}
+        <CinematicHero
+          imageSrc="/images/veg/plant/plant-hero.png"
+          imageAlt="Unifayre Mohali manufacturing plant at golden hour"
+          variant="inner"
+          priority={false}
+          eyebrow="Why Unifayre"
+          headline={
+            <>
+              Engineered in Mohali.
+              <br />
+              <em className="italic">Plated across the Gulf.</em>
+            </>
+          }
+          subline="Over 30 years of precision manufacturing. State-of-the-art technology, BRC-certified lines, and an R&D team that builds to your menu."
+          primaryCta={{ label: "Tour the plant", href: "/manufacturing" }}
+          secondaryCta={{ label: "Why Unifayre", href: "/why-unifayre" }}
+          objectPosition="right center"
+          overlayStyle="left"
+          refined
+        />
+
+        {/* Customisation R&D CTA band */}
         <section className="bg-[color:var(--bg-warm-shadow)] py-20 md:py-24">
           <div className="mx-auto max-w-[1320px] px-5 text-center md:px-10">
             <span className="text-[0.7rem] font-semibold uppercase tracking-[0.24em] text-[color:var(--accent-gold)]">

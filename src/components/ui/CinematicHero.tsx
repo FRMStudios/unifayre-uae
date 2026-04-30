@@ -5,12 +5,21 @@
  *
  * Full-bleed cinematic hero used across pages. Image fills the section with a
  * Ken Burns slow zoom, dark gradient overlay grounds the bottom for content,
- * gold accent line + serif headline + sub-line + dual CTAs sit bottom-left.
+ * gold accent line + headline + sub-line + dual CTAs sit bottom-left.
  *
  * Heights:
  *   "home"   → 90vh
  *   "page"   → 80vh   (Veg / Non-Veg landing)
  *   "inner"  → 60vh   (Why / Manufacturing / For UAE / Contact)
+ *
+ * Refined mode (`refined` prop) drops the headline one Tailwind step,
+ * switches to font-light + tracking-tight, and reduces sub-line size.
+ * Used on /vegetarian per the v2 final image integration brief.
+ *
+ * `objectPosition` controls how the image is anchored when cropped.
+ * `overlayStyle` switches the gradient direction:
+ *   "bottom-left" — gradient rises from bottom-left (default; chef's pass / multi-food shots)
+ *   "left"        — gradient sweeps from left (food-on-right shots)
  */
 
 import Image from "next/image";
@@ -25,7 +34,6 @@ type CTA = { label: string; href: string };
 export type CinematicHeroProps = {
   imageSrc: string;
   imageAlt: string;
-  /** Optional priority hint for next/image. Defaults to true on the first hero of a page. */
   priority?: boolean;
   variant?: "home" | "page" | "inner";
   eyebrow?: string;
@@ -34,6 +42,12 @@ export type CinematicHeroProps = {
   primaryCta?: CTA;
   secondaryCta?: CTA;
   ticker?: string[];
+  /** "center" (default) | "right" | "left" | any next/image objectPosition value */
+  objectPosition?: string;
+  /** "bottom-left" (default) | "left" — direction the dark gradient sweeps from */
+  overlayStyle?: "bottom-left" | "left";
+  /** When true, use refined sizing/weight per the V2 elegant typography brief. */
+  refined?: boolean;
 };
 
 const HEIGHT_BY_VARIANT: Record<NonNullable<CinematicHeroProps["variant"]>, string> = {
@@ -53,7 +67,18 @@ export default function CinematicHero({
   primaryCta,
   secondaryCta,
   ticker,
+  objectPosition = "center",
+  overlayStyle = "bottom-left",
+  refined = false,
 }: CinematicHeroProps) {
+  const headlineClass = refined
+    ? "mt-5 font-display text-3xl md:text-4xl lg:text-5xl font-light leading-tight tracking-tight text-[color:var(--text-primary)] text-balance"
+    : "mt-5 font-display text-[clamp(2.4rem,5.6vw,5rem)] font-semibold leading-[1.05] tracking-[-0.02em] text-[color:var(--text-primary)] text-balance";
+
+  const sublineClass = refined
+    ? "mt-5 max-w-xl text-base md:text-lg lg:text-xl font-light leading-relaxed tracking-wide text-[color:var(--text-primary)]/85"
+    : "mt-5 max-w-[34rem] text-[1rem] leading-relaxed text-[color:var(--text-secondary)]";
+
   return (
     <section
       className={`relative isolate overflow-hidden bg-[color:var(--bg-deep)] text-[color:var(--text-primary)] ${HEIGHT_BY_VARIANT[variant]}`}
@@ -68,33 +93,59 @@ export default function CinematicHero({
             priority={priority}
             sizes="100vw"
             className="object-cover"
+            style={{ objectPosition }}
           />
         </div>
-        {/* Cinematic gradient overlays — vertical for bottom-anchored content */}
-        <div aria-hidden className="absolute inset-0 cinematic-overlay" />
-        {/* Side darken on mobile so bottom-left content reads against any image */}
-        <div aria-hidden className="absolute inset-0 cinematic-side md:hidden" />
-        {/* Bottom darken */}
-        <div
-          aria-hidden
-          className="absolute inset-x-0 bottom-0 h-[70%] bg-gradient-to-t from-[color:var(--bg-deep)] via-[color:var(--bg-deep)]/70 to-transparent"
-        />
+
+        {/* Gradient overlays — direction depends on overlayStyle */}
+        {overlayStyle === "left" ? (
+          <>
+            {/* Mobile — heavy bottom darken so bottom-anchored content reads */}
+            <div
+              aria-hidden
+              className="absolute inset-0 bg-gradient-to-t from-[color:var(--bg-deep)] via-[color:var(--bg-deep)]/55 to-[color:var(--bg-deep)]/15 md:hidden"
+            />
+            {/* Desktop — left sweep gradient */}
+            <div
+              aria-hidden
+              className="absolute inset-0 hidden md:block"
+              style={{
+                background:
+                  "linear-gradient(90deg, rgba(10,22,40,0.85) 0%, rgba(10,22,40,0.55) 30%, rgba(10,22,40,0.15) 55%, transparent 75%)",
+              }}
+            />
+          </>
+        ) : (
+          <>
+            {/* Bottom-left rising gradient (default) */}
+            <div aria-hidden className="absolute inset-0 cinematic-overlay" />
+            <div aria-hidden className="absolute inset-0 cinematic-side md:hidden" />
+            <div
+              aria-hidden
+              className="absolute inset-x-0 bottom-0 h-[70%] bg-gradient-to-t from-[color:var(--bg-deep)] via-[color:var(--bg-deep)]/70 to-transparent"
+            />
+            <div
+              aria-hidden
+              className="absolute inset-0 hidden md:block"
+              style={{
+                background:
+                  "linear-gradient(45deg, rgba(10,22,40,0.85) 0%, rgba(10,22,40,0.4) 35%, transparent 65%)",
+              }}
+            />
+          </>
+        )}
       </div>
 
       {/* Top ticker (rotating category names) */}
       {ticker && ticker.length > 0 && (
         <div className="absolute inset-x-0 top-0 z-10 hidden border-b border-white/10 bg-black/20 backdrop-blur-md md:block">
           <div className="mx-auto flex max-w-[1320px] items-center gap-6 overflow-hidden px-10 py-2.5 text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-white/65">
-            <span className="animate-gold-pulse text-[color:var(--accent-gold)]">
-              ●
-            </span>
+            <span className="animate-gold-pulse text-[color:var(--accent-gold)]">●</span>
             <div className="flex w-max animate-marquee items-center gap-10">
               {[...ticker, ...ticker].map((t, i) => (
                 <span key={`${t}-${i}`} className="whitespace-nowrap">
                   {t}
-                  <span className="ml-10 text-[color:var(--accent-gold)]/60">
-                    /
-                  </span>
+                  <span className="ml-10 text-[color:var(--accent-gold)]/60">/</span>
                 </span>
               ))}
             </div>
@@ -144,7 +195,7 @@ export default function CinematicHero({
               hidden: { opacity: 0, y: 24 },
               show: { opacity: 1, y: 0, transition: { duration: 0.95, ease: EASE } },
             }}
-            className="mt-5 font-display text-[clamp(2.4rem,5.6vw,5rem)] font-semibold leading-[1.05] tracking-[-0.02em] text-[color:var(--text-primary)] text-balance"
+            className={headlineClass}
           >
             {headline}
           </motion.h1>
@@ -155,7 +206,7 @@ export default function CinematicHero({
                 hidden: { opacity: 0, y: 14 },
                 show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: EASE } },
               }}
-              className="mt-5 max-w-[34rem] text-[1rem] leading-relaxed text-[color:var(--text-secondary)]"
+              className={sublineClass}
             >
               {subline}
             </motion.p>
