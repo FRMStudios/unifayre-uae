@@ -47,7 +47,7 @@ export default function CategorySection({
   bannerSrc,
   bannerAlt,
   products,
-  productsToShow = 8,
+  productsToShow = 4,
   anchorId,
   imageObjectPosition = "right center",
   refined = true,
